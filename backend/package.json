@@ -7,5 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nazaire DARBOUX",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3",
+    "mongoose-unique-validator": "^3.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
 }
