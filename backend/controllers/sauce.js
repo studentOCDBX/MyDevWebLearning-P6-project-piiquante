@@ -87,17 +87,18 @@ exports.likeOrDislikeSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       if (like === 1) {
-        console.log("Cas du like = 1", sauce);
-        console.log(!sauce.usersLiked.includes(userId));
+  if (![1, 0, -1].includes(like)) {
+    return res.status(403).json({ Message: "Invalid like value" });
+  }
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      if (like === 1) {
         if (
           !sauce.usersLiked.includes(userId) &&
           !sauce.usersDisliked.includes(userId)
         ) {
-          console.log("user like ok");
-
           sauce.usersLiked.push(userId);
           sauce.likes++;
-          console.log(sauce);
         }
       } else if (like === -1) {
         if (
