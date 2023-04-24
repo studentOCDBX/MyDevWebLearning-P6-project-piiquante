@@ -82,7 +82,7 @@ exports.likeOrDislikeSauce = (req, res, next) => {
   if (![1, 0, -1].includes(like)) {
     return res.status(403).json({ Message: "Invalid like value" });
   }
-  Sauce.findOne({ id: req.params.id })
+  Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       console.log("Ancien likes :", sauce.likes);
       if (like === 1) {
@@ -92,7 +92,6 @@ exports.likeOrDislikeSauce = (req, res, next) => {
         ) {
           sauce.usersLiked.push(userId);
           sauce.likes++;
-          console.log(` nouveau like: ${sauce.likes}`);
         }
       } else if (like === -1) {
         if (
@@ -101,18 +100,15 @@ exports.likeOrDislikeSauce = (req, res, next) => {
         ) {
           sauce.usersDisliked.push(userId);
           sauce.dislikes++;
-          console.log(` nouveau dislikes: ${sauce.dislikes}`);
         }
       } else {
         if (sauce.usersLiked.includes(userId)) {
           sauce.usersLiked.pull(userId);
           sauce.likes--;
-          console.log(` nouveau like: ${sauce.likes}`);
         }
         if (sauce.usersDisliked.includes(userId)) {
           sauce.usersDisliked.pull(userId);
           sauce.dislikes--;
-          console.log(` nouveau dislikes: ${sauce.dislikes}`);
         }
       }
       sauce
