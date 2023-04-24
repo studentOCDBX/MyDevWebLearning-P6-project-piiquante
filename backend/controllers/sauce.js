@@ -44,12 +44,15 @@ exports.modifySauce = (req, res, next) => {
       if (sauce.userId != req.auth.userId) {
         return res.status(403).json({ Message: "Non-autorisé !" });
       }
-      Sauce.updateOne(
-        { _id: req.params.id },
-        { ...sauceObject, _id: req.params.id }
-      )
-        .then(() => res.status(200).json({ Message: "Objet modifié !" }))
-        .catch((error) => res.status(401).json({ error }));
+      const filename = sauce.imageUrl.split("/images/")[1];
+      fs.unlink(`images/${filename}`, () => {
+        Sauce.updateOne(
+          { _id: req.params.id },
+          { ...sauceObject, _id: req.params.id }
+        )
+          .then(() => res.status(200).json({ Message: "Objet modifié !" }))
+          .catch((error) => res.status(401).json({ error }));
+      });
     })
     .catch((error) => res.status(400).json({ error }));
 };
@@ -78,21 +81,23 @@ exports.deleteSauce = (req, res, next) => {
 
 exports.likeOrDislikeSauce = (req, res, next) => {
   const { like, userId } = req.body;
-  console.log({ like, userId });
   if (![1, 0, -1].includes(like)) {
     return res.status(403).json({ Message: "Invalid like value" });
   }
-  Sauce.findOne({ id: req.params.id })
+  Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
-      console.log("Ancien likes :", sauce.likes);
       if (like === 1) {
+        console.log("Cas du like = 1", sauce);
+        console.log(!sauce.usersLiked.includes(userId));
         if (
           !sauce.usersLiked.includes(userId) &&
           !sauce.usersDisliked.includes(userId)
         ) {
+          console.log("user like ok");
+
           sauce.usersLiked.push(userId);
           sauce.likes++;
-          console.log(` nouveau like: ${sauce.likes}`);
+          console.log(sauce);
         }
       } else if (like === -1) {
         if (
@@ -101,18 +106,15 @@ exports.likeOrDislikeSauce = (req, res, next) => {
         ) {
           sauce.usersDisliked.push(userId);
           sauce.dislikes++;
-          console.log(` nouveau dislikes: ${sauce.dislikes}`);
         }
       } else {
         if (sauce.usersLiked.includes(userId)) {
           sauce.usersLiked.pull(userId);
           sauce.likes--;
-          console.log(` nouveau like: ${sauce.likes}`);
         }
         if (sauce.usersDisliked.includes(userId)) {
           sauce.usersDisliked.pull(userId);
           sauce.dislikes--;
-          console.log(` nouveau dislikes: ${sauce.dislikes}`);
         }
       }
       sauce
