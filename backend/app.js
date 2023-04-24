@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
@@ -6,11 +7,9 @@ const path = require("path");
 
 const app = express();
 
+const DB_CONNECT = process.env.MONGODB_CONNECT;
 mongoose
-  .connect(
-    "mongodb+srv://darnellDBX:05Epsilon2013@piiquante.rnrpden.mongodb.net/?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connexion à MongoDB Atlas réussie !"))
   .catch(() => console.log("Connexion à MongoDB Atlas échouée !"));
 

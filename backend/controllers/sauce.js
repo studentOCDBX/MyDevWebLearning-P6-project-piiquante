@@ -84,7 +84,7 @@ exports.likeOrDislikeSauce = (req, res, next) => {
   }
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
-      console.log("Ancien likes :", sauce.likes);
+
       if (like === 1) {
         if (
           !sauce.usersLiked.includes(userId) &&
