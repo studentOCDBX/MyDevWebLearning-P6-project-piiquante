@@ -78,7 +78,6 @@ exports.deleteSauce = (req, res, next) => {
 
 exports.likeOrDislikeSauce = (req, res, next) => {
   const { like, userId } = req.body;
-  console.log({ like, userId });
   if (![1, 0, -1].includes(like)) {
     return res.status(403).json({ Message: "Invalid like value" });
   }
